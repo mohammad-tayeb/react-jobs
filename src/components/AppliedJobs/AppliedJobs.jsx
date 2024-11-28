@@ -6,30 +6,49 @@ import { GiMoneyStack } from "react-icons/gi";
 import { Link } from 'react-router-dom';
 
 const AppliedJobs = () => {
-    const [appliedJobs, setAppliedJobs] = useState([])
+    const [appliedJobs, setAppliedJobs] = useState([]) //appliedJobs is "array of object"
+    const [displayJobs, setDisplayJobs] = useState([])
+
+    const handleApplayJob = (filter) => {
+        if (filter === 'all') {
+            setDisplayJobs(appliedJobs)
+        }
+        else if (filter === 'remote') {
+            const remoteJobs = appliedJobs.filter(job => job.remote_or_onsite === 'Remote')
+            setDisplayJobs(remoteJobs)
+        }
+        else if (filter === 'onsite') {
+            const onsiteJobs = appliedJobs.filter(job => job.remote_or_onsite === 'Onsite')
+            setDisplayJobs(onsiteJobs)
+        }
+    }
+
     const jobs = useLoaderData();// hook to load local storage data
     useEffect(() => {
-        const storedJobIds = getStoredJobApplication(); //local storage data recived here
-        if (jobs.length > 0) {  //mmain data array of object "jobs" theke filter each array nibe then oi array er id er sathe loacl storage e store kora array er id ta mactch korbe "includes" er maddhome
-            const jobsApplied = jobs.filter(job => storedJobIds.includes(job.id))
+        const storedJobIds = getStoredJobApplication(); //local storage "array" data recived here
+        if (jobs.length > 0) {  //mmain data "array of object" "jobs" theke filter each array nibe then oi array er id er sathe loacl storage e store kora array er id ta mactch korbe "includes" er maddhome
+            const jobsApplied = jobs.filter(job => storedJobIds.includes(job.id))//"jobs array of object"/"job object"
             setAppliedJobs(jobsApplied);
+            setDisplayJobs(jobsApplied);
         }
-    }, [])
+    }, [jobs])
+
+
     return (
         <>
             <div>
                 <details className="dropdown">
                     <summary className="btn m-1 bg-violet-500 text-white">Filter</summary>
                     <ul className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow border-2 border-violet-500">
-                        <li><a>All</a></li>
-                        <li><a>Onsite</a></li>
-                        <li><a>Remote</a></li>
+                        <li><a onClick={() => handleApplayJob('all')}>All</a></li>
+                        <li><a onClick={() => handleApplayJob('onsite')}>Onsite</a></li>
+                        <li><a onClick={() => handleApplayJob('remote')}>Remote</a></li>
                     </ul>
                 </details>
             </div>
             <div className="grid grid-cols-2 mt-12">
                 {
-                    appliedJobs.map(job =>
+                    displayJobs.map(job =>
                         <div key={job.id}>
                             <div>
                                 <div className='mb-10'>
