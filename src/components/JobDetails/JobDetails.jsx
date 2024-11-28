@@ -10,7 +10,7 @@ const JobDetails = () => {
     const job = jobs.find(job => job.id === intID)
 
     const notify = () => {
-        saveJobApplications(id)
+        saveJobApplications(intID)
          toast('Applied For The Job')
     }
     return (
